@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { UserInput } from './modules for gender/UserInput'
+import { BtnGetGender } from './modules for gender/BtnGetGender'
+import { Result } from './modules for gender/Result'
+import { UserWarning } from './modules for gender/UserWarning'
+import {useDispatch, useSelector} from "react-redux";
+import {searchCountry, searchGender} from "./modules for gender/network";
+import {changeName} from "./redux";
+import {AppDispatch, RootState} from "./index";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export function App() {
+  const name = useSelector((state: RootState) => state.genderApp.userName);
+  const warning = useSelector((state: RootState) => state.genderApp.warning);
+  const dispatch = useDispatch<AppDispatch>();
+
+  function sendNameChangeGender(e: any) {
+    e.preventDefault();
+    dispatch(searchGender(name))
+    dispatch(searchCountry(name))
+    dispatch(changeName(''))
+  }
+
+  return(
+      <form onSubmit={sendNameChangeGender}>
+        <UserInput />
+        <BtnGetGender />
+        <Result />
+        {warning
+            ? <UserWarning warning={warning}/>
+            : false
+        }
+      </form>
+  )
 }
-
-export default App;
